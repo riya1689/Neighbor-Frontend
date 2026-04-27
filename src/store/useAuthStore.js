@@ -11,7 +11,7 @@ const useAuthStore = create((set) => ({
   login: async (credentials) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await api.post('/api/auth/login', credentials);
+      const response = await api.post('/auth/login', credentials);
       const { token, user } = response.data;
       
       if (token) {
@@ -30,7 +30,7 @@ const useAuthStore = create((set) => ({
   register: async (userData) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await api.post('/api/auth/register', userData);
+      const response = await api.post('/auth/register', userData);
       const { token, user } = response.data;
       
       if (token) {
@@ -61,7 +61,7 @@ const useAuthStore = create((set) => ({
 
     try {
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      const response = await api.get('/api/users/me');
+      const response = await api.get('/users/me');
       set({ user: response.data?.user || response.data, isAuthenticated: true, isLoading: false });
     } catch (error) {
       Cookies.remove('token');
@@ -74,4 +74,5 @@ const useAuthStore = create((set) => ({
 }));
 
 export default useAuthStore;
+
 
