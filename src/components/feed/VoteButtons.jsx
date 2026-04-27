@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowBigUp, ArrowBigDown } from "lucide-react";
+import { ChevronUp, ChevronDown } from "lucide-react";
 import useAuthStore from "@/store/useAuthStore";
 import useAppStore from "@/store/useAppStore";
 import api from "@/lib/api";
@@ -35,44 +35,57 @@ export default function VoteButtons({ postId, initialScore = 0 }) {
         setVoteStatus(type);
       }
     } catch (err) {
-      // Failed to vote softly handle
+      // Soft fail
     } finally {
       setIsVoting(false);
     }
   };
 
+  // Dynamic pill background and border classes
+  let pillClasses = "flex flex-row items-center border border-[#E0DDD8] dark:border-gray-700 rounded-[20px] px-2 py-0.5 space-x-2 transition-colors";
+  
+  let upvoteBtnClass = "p-1 rounded-full transition-colors flex items-center justify-center ";
+  let downvoteBtnClass = "p-1 rounded-full transition-colors flex items-center justify-center ";
+  let textClass = "text-xs font-semibold ";
+
+  if (voteStatus === 'upvote') {
+    pillClasses = "flex flex-row items-center border border-[#1D9E75] bg-[#E0F2F1] dark:bg-teal-900/30 rounded-[20px] px-2 py-0.5 space-x-2 transition-colors";
+    upvoteBtnClass += "text-[#1D9E75]";
+    downvoteBtnClass += "text-gray-400 hover:text-gray-600 dark:text-gray-500";
+    textClass += "text-[#1D9E75]";
+  } else if (voteStatus === 'downvote') {
+    pillClasses = "flex flex-row items-center border border-[#FF6B6B] bg-[#FFE5E5] dark:bg-red-900/30 rounded-[20px] px-2 py-0.5 space-x-2 transition-colors";
+    upvoteBtnClass += "text-gray-400 hover:text-gray-600 dark:text-gray-500";
+    downvoteBtnClass += "text-[#FF6B6B]";
+    textClass += "text-[#FF6B6B]";
+  } else {
+    upvoteBtnClass += "text-gray-500 hover:text-[#1D9E75] dark:text-gray-400";
+    downvoteBtnClass += "text-gray-500 hover:text-[#FF6B6B] dark:text-gray-400";
+    textClass += "text-gray-600 dark:text-gray-300";
+  }
+
   return (
-    <div className="flex flex-col items-center bg-gray-50 dark:bg-gray-800 rounded-lg p-1 border border-gray-100 dark:border-gray-700">
+    <div className={pillClasses}>
       <button
         onClick={() => handleVote('upvote')}
         disabled={isVoting}
-        className={`p-1 rounded transition-colors ${
-          voteStatus === 'upvote' 
-            ? 'text-amber bg-amber-50 dark:bg-amber-900/20' 
-            : 'text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-amber'
-        }`}
+        className={upvoteBtnClass}
         aria-label="Upvote"
       >
-        <ArrowBigUp className={`w-5 h-5 ${voteStatus === 'upvote' ? 'fill-current' : ''}`} />
+        <ChevronUp className="w-4 h-4 stroke-[2.5]" />
       </button>
       
-      <span className={`text-xs font-bold my-1 ${
-         voteStatus === 'upvote' ? 'text-amber' : voteStatus === 'downvote' ? 'text-teal' : 'text-gray-700 dark:text-gray-300'
-      }`}>
+      <span className={textClass}>
         {score}
       </span>
       
       <button
         onClick={() => handleVote('downvote')}
         disabled={isVoting}
-        className={`p-1 rounded transition-colors ${
-          voteStatus === 'downvote' 
-            ? 'text-teal bg-teal-50 dark:bg-teal-900/20' 
-            : 'text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-teal'
-        }`}
+        className={downvoteBtnClass}
         aria-label="Downvote"
       >
-        <ArrowBigDown className={`w-5 h-5 ${voteStatus === 'downvote' ? 'fill-current' : ''}`} />
+        <ChevronDown className="w-4 h-4 stroke-[2.5]" />
       </button>
     </div>
   );
